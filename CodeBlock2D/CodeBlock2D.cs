@@ -12,7 +12,7 @@ public class CodeBlock2D : Game
 
     private double CircleSpeed = _minSpeed;
     private Texture2D circle;
-    private Point CirclePos = new();
+    private Point CirclePos = new(); // 0.0 par default
 
     public CodeBlock2D()
     {
@@ -51,7 +51,7 @@ public class CodeBlock2D : Game
             // update circle pos if needed
             switch (key)
             {
-                case Keys.A:
+                case Keys.Q:
                     CirclePos = new((int)(CirclePos.X - milliseconds * CircleSpeed) , CirclePos.Y);
                     break;
                 case Keys.S:
@@ -60,7 +60,7 @@ public class CodeBlock2D : Game
                 case Keys.D:
                     CirclePos = new((int)(CirclePos.X + milliseconds * CircleSpeed), CirclePos.Y);
                     break;
-                case Keys.W:
+                case Keys.Z:
                     CirclePos = new(CirclePos.X, (int)(CirclePos.Y - milliseconds * CircleSpeed));
                     break;
                 case Keys.Space:
