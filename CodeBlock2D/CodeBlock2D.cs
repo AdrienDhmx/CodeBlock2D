@@ -18,6 +18,9 @@ public class CodeBlock2D : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        _graphics.PreferredBackBufferWidth = 1152;
+        _graphics.PreferredBackBufferHeight = 704;
+        _graphics.ApplyChanges();
 
         base.Initialize();
     }
