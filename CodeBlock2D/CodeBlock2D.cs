@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using CodeBlock2D;
+using System;
 
 namespace CodeBlock2D;
 public class CodeBlock2D : Game
@@ -19,10 +20,11 @@ public class CodeBlock2D : Game
     private Texture2D _grassTexture;
     private Texture2D _playerTexture;
 
-    private int[,] Map;
+    private int[,] map;
 
-    private int xPlayer = WindowWidth / 2 - BlockSize;
-    private int yPlayer = WindowHeight / 2 - BlockSize;
+    private float xPlayer = WindowWidth / 2 - BlockSize;
+    private float yPlayer = 0; //WindowHeight / 2 - BlockSize;
+    private float yVelPlayer = 0;
 
     public CodeBlock2D()
     {
@@ -38,7 +40,7 @@ public class CodeBlock2D : Game
         _graphics.PreferredBackBufferHeight = 704;
         _graphics.ApplyChanges();
 
-        Map = CreateMap();
+        map = CreateMap();
 
         base.Initialize();
     }
@@ -57,6 +59,8 @@ public class CodeBlock2D : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+        Jump();
+        PlayerPhysics();
 
         base.Update(gameTime);
     }
@@ -73,7 +77,7 @@ public class CodeBlock2D : Game
         {
             for (int column = 0; column < _nbCol; column++)
             {
-                idBlock = Map[line, column];
+                idBlock = map[line, column];
                 switch ((BlockEnum)idBlock)
                 {
                     case BlockEnum.dirt:
@@ -87,7 +91,7 @@ public class CodeBlock2D : Game
             }
         }
 
-        _spriteBatch.Draw(_playerTexture, new Rectangle(xPlayer, yPlayer, _playerTexture.Width, _playerTexture.Height), Color.White);
+        _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)(yPlayer), _playerTexture.Width, _playerTexture.Height), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -97,6 +101,8 @@ public class CodeBlock2D : Game
     {
         // free all memory
         _dirtTexture.Dispose();
+        _grassTexture.Dispose();
+        _playerTexture.Dispose();
         _spriteBatch.Dispose();
         _graphics.Dispose();
 
@@ -110,21 +116,95 @@ public class CodeBlock2D : Game
         {
             for (int column = 0; column < _nbCol; column++)
             {
-                if(line < 2 * _nbLine / 3)
+                if (line < 2 * _nbLine / 3)
                 {
                     map[line, column] = 0;
 
-                } else if (line == 2* _nbLine / 3) {
+                }
+                else if (line == 2 * _nbLine / 3)
+                {
 
                     map[line, column] = 2;
 
-                } else {
+                }
+                else
+                {
 
                     map[line, column] = 1;
                 }
-                
+
             }
         }
         return map;
+    }
+    private void PlayerPhysics()
+    {
+        int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
+
+        while (yFloor < 0)
+        {
+            if (map[ySearch, xMatPos] != (int)BlockEnum.air)
+            {
+                yFloor = ySearch * BlockSize;
+            }
+            else
+            {
+                ySearch++;
+            }
+        }
+        
+        if (map[yMatPos + 2, xMatPos] == (int)BlockEnum.air)
+        {
+            if (yVelPlayer <= 5)
+            {
+                yVelPlayer += 0.49f;
+            }
+        }
+
+        if (yVelPlayer != 0)
+        {
+            if (yVelPlayer > 0)
+            {
+                if (yPlayer + yVelPlayer < yFloor - 2 * BlockSize)
+                {
+                    yPlayer += yVelPlayer;
+                }
+                else
+                {
+                    yPlayer = yFloor - 2 * BlockSize;
+                    yVelPlayer = 0;
+                }
+            }
+            if (yVelPlayer < 0)
+            {
+                yPlayer += yVelPlayer;
+                yVelPlayer += -yVelPlayer * 0.05f;
+
+            }
+        }
+    }
+    private void Jump()
+    {
+        if (Keyboard.GetState().IsKeyDown(Keys.Space))
+        {
+            int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
+
+            while (yFloor < 0)
+            {
+                if (map[ySearch, xMatPos] != (int)BlockEnum.air)
+                {
+                    yFloor = ySearch * BlockSize;
+                }
+                else
+                {
+                    ySearch++;
+                }
+            }
+
+            if (yPlayer == yFloor - 2 * BlockSize)
+            {
+                yVelPlayer -= 10;
+            }
+        }
     }
 }
