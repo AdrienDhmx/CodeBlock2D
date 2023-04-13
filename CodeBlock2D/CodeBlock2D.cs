@@ -22,7 +22,7 @@ public class CodeBlock2D : Game
     private int[,] Map;
 
     private int xPlayer = WindowWidth / 2;
-    private int yPlayer = WindowHeight / 2;
+    private int yPlayer = WindowHeight / 2 - 3 * BlocSize;
 
     public CodeBlock2D()
     {

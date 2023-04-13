@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace CodeBlock2D
 {
-    internal class BlockEnum
+    public enum BlockEnum
     {
+        air = 0,
+        dirt,
+        grass,
     }
 }
