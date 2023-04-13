@@ -19,21 +19,16 @@ public class CodeBlock2D : Game
     private Texture2D _dirtTexture;
     private Texture2D _grassTexture;
     private Texture2D _playerTexture;
-<<<<<<< HEAD
 
     private int[,] map;
 
-    private float xPlayer = WindowWidth / 2 - BlockSize;
-    private float yPlayer = 0; //WindowHeight / 2 - BlockSize;
     private float yVelPlayer = 0;
-=======
     
     private int[,] Map;
 
     private float xPlayer = WindowWidth / 2 - BlockSize;
     private float yPlayer = WindowHeight / 2 - BlockSize;
     private float _speedPlayer = 0.3f;
->>>>>>> b9f40ce3fb929d2bd065d96bdf5e7d24f88c7eb7
 
     public CodeBlock2D()
     {
@@ -68,12 +63,10 @@ public class CodeBlock2D : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-<<<<<<< HEAD
         Jump();
         PlayerPhysics();
-=======
+
         int ellapsedMs = gameTime.ElapsedGameTime.Milliseconds;
->>>>>>> b9f40ce3fb929d2bd065d96bdf5e7d24f88c7eb7
 
         if (Keyboard.GetState().IsKeyDown(Keys.Q))
         {
@@ -120,11 +113,8 @@ public class CodeBlock2D : Game
             }
         }
 
-<<<<<<< HEAD
         _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)(yPlayer), _playerTexture.Width, _playerTexture.Height), Color.White);
-=======
         _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)yPlayer, _playerTexture.Width, _playerTexture.Height), Color.White);
->>>>>>> b9f40ce3fb929d2bd065d96bdf5e7d24f88c7eb7
         _spriteBatch.End();
 
         base.Draw(gameTime);
