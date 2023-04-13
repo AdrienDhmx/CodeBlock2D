@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using CodeBlock2D;
+using System;
 
 namespace CodeBlock2D;
 public class CodeBlock2D : Game
@@ -23,6 +24,7 @@ public class CodeBlock2D : Game
 
     private int xPlayer = WindowWidth / 2 - BlockSize;
     private int yPlayer = WindowHeight / 2 - BlockSize;
+    private float speedPlayer;
 
     public CodeBlock2D()
     {
@@ -39,6 +41,8 @@ public class CodeBlock2D : Game
         _graphics.ApplyChanges();
 
         Map = CreateMap();
+        speedPlayer=xPlayer * 0f;
+        speedPlayer = yPlayer * 0f;
 
         base.Initialize();
     }
@@ -57,8 +61,23 @@ public class CodeBlock2D : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-
-        base.Update(gameTime);
+        if (Keyboard.GetState().IsKeyDown(Keys.Q))
+        {
+            xPlayer -= gameTime.ElapsedGameTime.Milliseconds;
+        }
+        else if (Keyboard.GetState().IsKeyDown(Keys.D))
+        {
+            xPlayer += gameTime.ElapsedGameTime.Milliseconds;
+        }
+        else if (Keyboard.GetState().IsKeyDown(Keys.Space) || Keyboard.GetState().IsKeyDown(Keys.Up))
+        {
+            yPlayer -= gameTime.ElapsedGameTime.Milliseconds;
+        }
+        else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+        {
+            yPlayer += gameTime.ElapsedGameTime.Milliseconds;
+        }
+            base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
