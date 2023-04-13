@@ -32,6 +32,8 @@ public class CodeBlock2D : Game
         _graphics.PreferredBackBufferHeight = 704;
         _graphics.ApplyChanges();
 
+        Map = CreateMap();
+
         base.Initialize();
     }
 
@@ -39,7 +41,7 @@ public class CodeBlock2D : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // TODO: use this.Content to load your game content here
+        _dirtTexture = Content.Load<Texture2D>("dirt");
     }
 
     protected override void Update(GameTime gameTime)
