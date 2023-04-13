@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using CodeBlock2D;
 
 namespace CodeBlock2D;
 public class CodeBlock2D : Game
@@ -15,6 +16,7 @@ public class CodeBlock2D : Game
     private const int _nbCol = WindowWidth / BlocSize;
 
     private Texture2D _dirtTexture;
+    private Texture2D _grassTexture;
     private Texture2D _playerTexture;
 
     private int[,] Map;
@@ -46,6 +48,7 @@ public class CodeBlock2D : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _dirtTexture = Content.Load<Texture2D>("dirt");
+        _grassTexture = Content.Load<Texture2D>("grass");
         _playerTexture = Content.Load<Texture2D>("player");
     }
 
@@ -60,17 +63,26 @@ public class CodeBlock2D : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        int idBlock;
+
+        GraphicsDevice.Clear(Color.SkyBlue);
 
         _spriteBatch.Begin();
 
-        for (int l = 0; l < _nbLine; l++)
+        for (int line = 0; line < _nbLine; line++)
         {
-            for (int c = 0; c < _nbCol; c++)
+            for (int column = 0; column < _nbCol; column++)
             {
-                if (Map[l,c] == 1)
+                idBlock = Map[line, column];
+                switch ((BlockEnum)idBlock)
                 {
-                    _spriteBatch.Draw(_dirtTexture, new Rectangle(BlocSize*c, BlocSize * l, _dirtTexture.Width, _dirtTexture.Height), Color.White);
+                    case BlockEnum.dirt:
+                        _spriteBatch.Draw(_dirtTexture, new Rectangle(BlocSize * column, BlocSize * line, _dirtTexture.Width, _dirtTexture.Height), Color.White);
+                        break;
+
+                    case BlockEnum.grass:
+                        _spriteBatch.Draw(_grassTexture, new Rectangle(BlocSize * column, BlocSize * line, _grassTexture.Width, _grassTexture.Height), Color.White);
+                        break;
                 }
             }
         }
@@ -101,9 +113,13 @@ public class CodeBlock2D : Game
                 if(l < _nbLine / 2)
                 {
                     map[l, c] = 0;
-                }
-                else
-                {
+
+                } else if (l == _nbLine / 2) {
+
+                    map[l, c] = 2;
+
+                } else {
+
                     map[l, c] = 1;
                 }
                 
