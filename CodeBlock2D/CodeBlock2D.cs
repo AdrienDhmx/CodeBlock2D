@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using CodeBlock2D;
+using System;
 
 namespace CodeBlock2D;
 public class CodeBlock2D : Game
@@ -9,11 +10,11 @@ public class CodeBlock2D : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
-    private const int BlocSize = 32;
+    private const int BlockSize = 32;
     private const int WindowWidth = 1152; // 36 blocs
     private const int WindowHeight = 704; // 22 blocs
-    private const int _nbLine = WindowHeight / BlocSize;
-    private const int _nbCol = WindowWidth / BlocSize;
+    private const int _nbLine = WindowHeight / BlockSize;
+    private const int _nbCol = WindowWidth / BlockSize;
 
     private Texture2D _dirtTexture;
     private Texture2D _grassTexture;
@@ -21,8 +22,9 @@ public class CodeBlock2D : Game
 
     private int[,] Map;
 
-    private int xPlayer = WindowWidth / 2;
-    private int yPlayer = WindowHeight / 2 - 3 * BlocSize;
+    private int xPlayer = WindowWidth / 2 - BlockSize;
+    private int yPlayer = WindowHeight / 2 - BlockSize;
+    private float speedPlayer;
 
     public CodeBlock2D()
     {
@@ -39,6 +41,8 @@ public class CodeBlock2D : Game
         _graphics.ApplyChanges();
 
         Map = CreateMap();
+        speedPlayer=xPlayer * 0f;
+        speedPlayer = yPlayer * 0f;
 
         base.Initialize();
     }
@@ -57,8 +61,23 @@ public class CodeBlock2D : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-
-        base.Update(gameTime);
+        if (Keyboard.GetState().IsKeyDown(Keys.Q))
+        {
+            xPlayer -= gameTime.ElapsedGameTime.Milliseconds;
+        }
+        else if (Keyboard.GetState().IsKeyDown(Keys.D))
+        {
+            xPlayer += gameTime.ElapsedGameTime.Milliseconds;
+        }
+        else if (Keyboard.GetState().IsKeyDown(Keys.Space) || Keyboard.GetState().IsKeyDown(Keys.Up))
+        {
+            yPlayer -= gameTime.ElapsedGameTime.Milliseconds;
+        }
+        else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+        {
+            yPlayer += gameTime.ElapsedGameTime.Milliseconds;
+        }
+            base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
@@ -77,11 +96,11 @@ public class CodeBlock2D : Game
                 switch ((BlockEnum)idBlock)
                 {
                     case BlockEnum.dirt:
-                        _spriteBatch.Draw(_dirtTexture, new Rectangle(BlocSize * column, BlocSize * line, _dirtTexture.Width, _dirtTexture.Height), Color.White);
+                        _spriteBatch.Draw(_dirtTexture, new Rectangle(BlockSize * column, BlockSize * line, _dirtTexture.Width, _dirtTexture.Height), Color.White);
                         break;
 
                     case BlockEnum.grass:
-                        _spriteBatch.Draw(_grassTexture, new Rectangle(BlocSize * column, BlocSize * line, _grassTexture.Width, _grassTexture.Height), Color.White);
+                        _spriteBatch.Draw(_grassTexture, new Rectangle(BlockSize * column, BlockSize * line, _grassTexture.Width, _grassTexture.Height), Color.White);
                         break;
                 }
             }
@@ -106,21 +125,21 @@ public class CodeBlock2D : Game
     private static int[,] CreateMap()
     {
         int[,] map = new int[_nbLine, _nbCol];
-        for (int l = 0; l < _nbLine; l++)
+        for (int line = 0; line < _nbLine; line++)
         {
-            for (int c = 0; c < _nbCol; c++)
+            for (int column = 0; column < _nbCol; column++)
             {
-                if(l < _nbLine / 2)
+                if(line < 2 * _nbLine / 3)
                 {
-                    map[l, c] = 0;
+                    map[line, column] = 0;
 
-                } else if (l == _nbLine / 2) {
+                } else if (line == 2* _nbLine / 3) {
 
-                    map[l, c] = 2;
+                    map[line, column] = 2;
 
                 } else {
 
-                    map[l, c] = 1;
+                    map[line, column] = 1;
                 }
                 
             }
