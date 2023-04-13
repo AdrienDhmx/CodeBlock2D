@@ -5,25 +5,19 @@ using Microsoft.Xna.Framework.Input;
 namespace CodeBlock2D;
 public class CodeBlock2D : Game
 {
-<<<<<<< Updated upstream
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
-=======
     private const int BlocSize = 32;
     private const int WindowWidth = 1152; // 36 blocs
     private const int WindowHeight = 704; // 22 blocs
     private const int _nbLine = WindowHeight / BlocSize;
     private const int _nbCol = WindowWidth / BlocSize;
 
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
-
     private Texture2D _dirtTexture;
 
     private int[,] Map;
 
->>>>>>> Stashed changes
     public CodeBlock2D()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -61,12 +55,6 @@ public class CodeBlock2D : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-<<<<<<< Updated upstream
-        // TODO: Add your drawing code here
-
-        base.Draw(gameTime);
-    }
-=======
         _spriteBatch.Begin();
 
         for (int l = 0; l < _nbLine; l++)
@@ -115,5 +103,4 @@ public class CodeBlock2D : Game
         }
         return map;
     }
->>>>>>> Stashed changes
 }
