@@ -15,8 +15,12 @@ public class CodeBlock2D : Game
     private const int _nbCol = WindowWidth / BlocSize;
 
     private Texture2D _dirtTexture;
+    private Texture2D _playerTexture;
 
     private int[,] Map;
+
+    private int xPlayer = WindowWidth / 2;
+    private int yPlayer = WindowHeight / 2;
 
     public CodeBlock2D()
     {
@@ -42,6 +46,7 @@ public class CodeBlock2D : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _dirtTexture = Content.Load<Texture2D>("dirt");
+        _playerTexture = Content.Load<Texture2D>("player");
     }
 
     protected override void Update(GameTime gameTime)
@@ -70,6 +75,7 @@ public class CodeBlock2D : Game
             }
         }
 
+        _spriteBatch.Draw(_playerTexture, new Rectangle(xPlayer, yPlayer, _playerTexture.Width, _playerTexture.Height), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
