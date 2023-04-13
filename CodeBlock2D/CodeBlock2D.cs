@@ -211,6 +211,7 @@ public class CodeBlock2D : Game
         if (Keyboard.GetState().IsKeyDown(Keys.Space))
         {
             int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
+        int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
 
             while (yFloor < 0)
             {
