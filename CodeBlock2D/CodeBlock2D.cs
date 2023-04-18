@@ -76,8 +76,11 @@ public class CodeBlock2D : Game
 
         int ellapsedMs = gameTime.ElapsedGameTime.Milliseconds;
 
+<<<<<<< HEAD
 
         if (Keyboard.GetState().IsKeyDown(Keys.Q))
+=======
+>>>>>>> integration
         {
             xPlayer -= ellapsedMs * _speedPlayer;
         }
