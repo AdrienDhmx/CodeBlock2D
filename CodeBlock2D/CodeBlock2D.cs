@@ -68,18 +68,27 @@ public class CodeBlock2D : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        Jump();
         PlayerPhysics();
 
         int ellapsedMs = gameTime.ElapsedGameTime.Milliseconds;
+        Keys[] keysDown = Keyboard.GetState().GetPressedKeys();
 
-        if (Keyboard.GetState().IsKeyDown(Keys.Q))
+        foreach (Keys key in keysDown)
         {
-            xPlayer -= ellapsedMs * _speedPlayer;
-        }
-        else if (Keyboard.GetState().IsKeyDown(Keys.D))
-        {
-            xPlayer += ellapsedMs * _speedPlayer;
+            switch (key)
+            {
+                case Keys.Q:
+                    xPlayer -= ellapsedMs * _speedPlayer;
+                    break;
+                case Keys.D:
+                    xPlayer += ellapsedMs * _speedPlayer;
+                    break;
+                case Keys.Space:
+                    Jump();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -205,10 +214,7 @@ public class CodeBlock2D : Game
     }
     private void Jump()
     {
-        if (Keyboard.GetState().IsKeyDown(Keys.Space))
-        {
-            int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
-        }
+        int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
         while (yFloor < 0)
         {
             if (map[ySearch, xMatPos] != (int)BlockEnum.air)
@@ -223,10 +229,7 @@ public class CodeBlock2D : Game
 
         if (yPlayer == yFloor - 2 * BlockSize)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            { 
-                yVelPlayer -= 10;
-            }
+            yVelPlayer -= 10;
         }
     }
 }
