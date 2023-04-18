@@ -21,7 +21,7 @@ public class CodeBlock2D : Game
     private const int _nbLine = WindowHeight / BlockSize;
     private const int _nbCol = WindowWidth / BlockSize;
     private const int gapBetweenInventoryBlock = 5;
-    private const int startInventoryX = WindowWidth - (_inventorySize + gapBetweenInventoryBlock) * BlockSize;
+    private const int startInventoryX = WindowWidth - (BlockSize + gapBetweenInventoryBlock) * _inventorySize;
 
     private const int _inventorySize = 6;
 
