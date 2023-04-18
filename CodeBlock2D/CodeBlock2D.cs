@@ -139,12 +139,13 @@ public class CodeBlock2D : Game
     private static int[,] CreateMap()
     {
         int[,] map = new int[_nbLine, _nbCol];
-        int baseFloor = _nbLine * 6 / 9, maxHeight = baseFloor / 2;
+        int baseFloor = _nbLine * 6 / 9, maxHeight = baseFloor / 2 + 4;
         int floorLvl = _floorLvl.Next(baseFloor - 2, baseFloor + 1);
 
         for (int column = 0; column < _nbCol; column++)
         {
             floorLvl = _floorLvl.Next(floorLvl - 1, floorLvl + 2);
+
             if (floorLvl <= maxHeight)
             {
                 floorLvl = maxHeight;
