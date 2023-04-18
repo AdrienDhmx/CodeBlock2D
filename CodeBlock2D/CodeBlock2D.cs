@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using CodeBlock2D;
 using System;
+using System.Runtime.CompilerServices;
+using System.Data.Common;
 
 namespace CodeBlock2D;
 public class CodeBlock2D : Game
@@ -11,10 +13,12 @@ public class CodeBlock2D : Game
     private SpriteBatch _spriteBatch;
 
     private const int BlockSize = 32;
-    private const int WindowWidth = 1152; // 36 blocs
-    private const int WindowHeight = 704; // 22 blocs
+    private const int WindowWidth = 42 * BlockSize; // 36 blocs
+    private const int WindowHeight = 24 * BlockSize; // 22 blocs
     private const int _nbLine = WindowHeight / BlockSize;
     private const int _nbCol = WindowWidth / BlockSize;
+
+    private Texture2D _background;
 
     private Texture2D _dirtTexture;
     private Texture2D _grassTexture;
@@ -24,7 +28,6 @@ public class CodeBlock2D : Game
 
     private float yVelPlayer = 0;
     
-    private int[,] Map;
 
     private float xPlayer = WindowWidth / 2 - BlockSize;
     private float yPlayer = WindowHeight / 2 - BlockSize;
@@ -40,8 +43,8 @@ public class CodeBlock2D : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-        _graphics.PreferredBackBufferWidth = 1152;
-        _graphics.PreferredBackBufferHeight = 704;
+        _graphics.PreferredBackBufferWidth = WindowWidth;
+        _graphics.PreferredBackBufferHeight = WindowHeight;
         _graphics.ApplyChanges();
 
         map = CreateMap();
@@ -52,6 +55,8 @@ public class CodeBlock2D : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        _background = Content.Load<Texture2D>("background");
 
         _dirtTexture = Content.Load<Texture2D>("dirt");
         _grassTexture = Content.Load<Texture2D>("grass");
@@ -76,24 +81,16 @@ public class CodeBlock2D : Game
         {
             xPlayer += ellapsedMs * _speedPlayer;
         }
-        else if (Keyboard.GetState().IsKeyDown(Keys.Space) || Keyboard.GetState().IsKeyDown(Keys.Up))
-        {
-            yPlayer -= ellapsedMs * _speedPlayer;
-        }
-        else if (Keyboard.GetState().IsKeyDown(Keys.Down))
-        {
-            yPlayer += ellapsedMs * _speedPlayer;
-        }
-            base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
         int idBlock;
 
-        GraphicsDevice.Clear(Color.SkyBlue);
-
+        GraphicsDevice.Clear(Color.White);
         _spriteBatch.Begin();
+
+        _spriteBatch.Draw(_background, new Rectangle(0,0,WindowWidth,WindowHeight), Color.White);
 
         for (int line = 0; line < _nbLine; line++)
         {
@@ -211,21 +208,23 @@ public class CodeBlock2D : Game
         if (Keyboard.GetState().IsKeyDown(Keys.Space))
         {
             int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
-
-            while (yFloor < 0)
+        }
+        while (yFloor < 0)
+        {
+            if (map[ySearch, xMatPos] != (int)BlockEnum.air)
             {
-                if (map[ySearch, xMatPos] != (int)BlockEnum.air)
-                {
-                    yFloor = ySearch * BlockSize;
-                }
-                else
-                {
-                    ySearch++;
-                }
+                yFloor = ySearch * BlockSize;
             }
-
-            if (yPlayer == yFloor - 2 * BlockSize)
+            else
             {
+                ySearch++;
+            }
+        }
+
+        if (yPlayer == yFloor - 2 * BlockSize)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            { 
                 yVelPlayer -= 10;
             }
         }
