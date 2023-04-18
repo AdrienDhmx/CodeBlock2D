@@ -229,8 +229,10 @@ public class CodeBlock2D : Game
     }
     private void Jump()
     {
-        int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
-
+        if (Keyboard.GetState().IsKeyDown(Keys.Space))
+        {
+            int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
+        }
         while (yFloor < 0)
         {
             if (map[ySearch, xMatPos] != (int)BlockEnum.air)
