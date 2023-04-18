@@ -199,9 +199,9 @@ public class CodeBlock2D : Game
         
         if (map[yMatPos + 2, xMatPos] == (int)BlockEnum.air)
         {
-            if (yVelPlayer <= 5)
+            if (yVelPlayer <= 8)
             {
-                yVelPlayer += 0.49f;
+                yVelPlayer += 0.70f;
             }
         }
 
@@ -230,7 +230,6 @@ public class CodeBlock2D : Game
     private void Jump()
     {
         int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
-
         while (yFloor < 0)
         {
             if (map[ySearch, xMatPos] != (int)BlockEnum.air)
