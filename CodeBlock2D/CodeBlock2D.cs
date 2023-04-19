@@ -25,6 +25,8 @@ public class CodeBlock2D : Game
 
     private const int _inventorySize = 6;
 
+    private static Random _floorLvl = new Random();
+
     private SpriteFont _font;
 
     private Texture2D _background;
@@ -32,6 +34,7 @@ public class CodeBlock2D : Game
     private Texture2D _inventoryBlockSelected;
 
     private Texture2D _dirtTexture;
+    private Texture2D _stoneTexture;
     private Texture2D _grassTexture;
     private Texture2D _playerTexture;
 
@@ -82,8 +85,9 @@ public class CodeBlock2D : Game
         _inventoryBlockSelected = Content.Load<Texture2D>("inventoryBlockSelected");
 
         _dirtTexture = Content.Load<Texture2D>("Blocks/dirt");
+        _stoneTexture = Content.Load<Texture2D>("Blocks/stone");
         _grassTexture = Content.Load<Texture2D>("Blocks/grass");
-        _playerTexture = Content.Load<Texture2D>("player");
+        _playerTexture = Content.Load<Texture2D>("Player/player");
     }
 
     protected override void Update(GameTime gameTime)
@@ -94,6 +98,7 @@ public class CodeBlock2D : Game
 
         PlayerPhysics();
 
+        int newXplayer;
         int ellapsedMs = gameTime.ElapsedGameTime.Milliseconds;
         Keys[] keysDown = Keyboard.GetState().GetPressedKeys();
 
@@ -102,14 +107,27 @@ public class CodeBlock2D : Game
             switch (key)
             {
                 case Keys.Q:
-                    xPlayer -= ellapsedMs * _speedPlayer;
+                    newXplayer = ((int)(xPlayer - ellapsedMs * _speedPlayer) / BlockSize);
+
+                    if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1, newXplayer] == 0)
+                    {
+                        xPlayer -= ellapsedMs * _speedPlayer;
+                    }
                     break;
+
                 case Keys.D:
-                    xPlayer += ellapsedMs * _speedPlayer;
+                    newXplayer = ((int)(xPlayer + ellapsedMs * _speedPlayer) / BlockSize) + 1;
+
+                    if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1, newXplayer] == 0)
+                    {
+                        xPlayer += ellapsedMs * _speedPlayer;
+                    }
                     break;
+
                 case Keys.Space:
                     Jump();
                     break;
+
                 default:
                     break;
             }
@@ -138,6 +156,10 @@ public class CodeBlock2D : Game
 
                     case BlockEnum.grass:
                         _spriteBatch.Draw(_grassTexture, new Rectangle(BlockSize * column, BlockSize * line, _grassTexture.Width, _grassTexture.Height), Color.White);
+                        break;
+
+                    case BlockEnum.stone:
+                        _spriteBatch.Draw(_stoneTexture, new Rectangle(BlockSize * column, BlockSize * line, BlockSize, BlockSize), Color.White);
                         break;
                 }
             }
@@ -170,27 +192,54 @@ public class CodeBlock2D : Game
     private static int[,] CreateMap()
     {
         int[,] map = new int[_nbLine, _nbCol];
-        for (int line = 0; line < _nbLine; line++)
+        int baseFloor = _nbLine * 6 / 9, maxHeight = baseFloor / 2 + 4, formation = 0;
+        int floorLvl = _floorLvl.Next(baseFloor - 2, baseFloor + 1);
+
+        for (int column = 0; column < _nbCol; column++)
         {
-            for (int column = 0; column < _nbCol; column++)
+            if (formation == 1)
             {
-                if (line < 2 * _nbLine / 3)
+                floorLvl = _floorLvl.Next(floorLvl - 1, floorLvl + 2);
+                formation = 0;
+            }
+            else
+            {
+                formation++;
+            }
+
+
+            if (floorLvl <= maxHeight)
+            {
+                floorLvl = maxHeight;
+            }
+            else if (floorLvl >= _nbLine)
+            {
+                floorLvl--;
+            }
+            for (int line = 0; line < _nbLine; line++)
+            {
+                if (line < floorLvl)
                 {
                     map[line, column] = 0;
 
                 }
-                else if (line == 2 * _nbLine / 3)
+                else if (line == floorLvl)
                 {
 
                     map[line, column] = 2;
 
                 }
-                else
+                else if (line < floorLvl + 5)
                 {
 
                     map[line, column] = 1;
-                }
 
+                }
+                else
+                {
+
+                    map[line, column] = 3;
+                }
             }
         }
         return map;
