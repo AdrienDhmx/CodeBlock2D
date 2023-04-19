@@ -32,6 +32,7 @@ public class CodeBlock2D : Game
     private Texture2D _background;
     private Texture2D _inventoryBlock;
     private Texture2D _inventoryBlockSelected;
+
     private Texture2D _dirtTexture;
     private Texture2D _stoneTexture;
     private Texture2D _grassTexture;
@@ -46,15 +47,19 @@ public class CodeBlock2D : Game
     private int health_Bar = 100;
     private bool Attacked = false;
     private bool Healed = false;
-    
-  
+
+
 
 
 
     private float xPlayer = WindowWidth / 2 - BlockSize;
-    private float yPlayer = 0;//WindowHeight / 2 - BlockSize;
+    private float yPlayer = WindowHeight / 2 - BlockSize;
     private float _speedPlayer = 0.3f;
 
+    /// <summary>
+    /// Key => Value
+    /// blockIndex => [blockType, Quantity]
+    /// </summary>
     private Dictionary<int, int[]> inventory;
     private int selectedInventoryBlock = 0;
 
@@ -67,7 +72,7 @@ public class CodeBlock2D : Game
 
     protected override void Initialize()
     {
-    
+
         _graphics.PreferredBackBufferWidth = WindowWidth;
         _graphics.PreferredBackBufferHeight = WindowHeight;
         _graphics.ApplyChanges();
@@ -84,6 +89,10 @@ public class CodeBlock2D : Game
 
         _font = Content.Load<SpriteFont>("font");
         _background = Content.Load<Texture2D>("background");
+
+        _inventoryBlock = Content.Load<Texture2D>("inventoryBlock");
+        _inventoryBlockSelected = Content.Load<Texture2D>("inventoryBlockSelected");
+
         _dirtTexture = Content.Load<Texture2D>("Blocks/dirt");
         _stoneTexture = Content.Load<Texture2D>("Blocks/stone");
         _grassTexture = Content.Load<Texture2D>("Blocks/grass");
@@ -114,8 +123,8 @@ public class CodeBlock2D : Game
 
         PlayerPhysics();
 
-        int ellapsedMs = gameTime.ElapsedGameTime.Milliseconds;
         int newXplayer;
+        int ellapsedMs = gameTime.ElapsedGameTime.Milliseconds;
         Keys[] keysDown = Keyboard.GetState().GetPressedKeys();
 
         foreach (Keys key in keysDown)
@@ -125,7 +134,7 @@ public class CodeBlock2D : Game
                 case Keys.Q:
                     newXplayer = ((int)(xPlayer - ellapsedMs * _speedPlayer) / BlockSize);
 
-                    if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1 , newXplayer] == 0)
+                    if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1, newXplayer] == 0)
                     {
                         xPlayer -= ellapsedMs * _speedPlayer;
                     }
@@ -157,7 +166,7 @@ public class CodeBlock2D : Game
         GraphicsDevice.Clear(Color.White);
         _spriteBatch.Begin();
 
-        _spriteBatch.Draw(_background, new Rectangle(0,0,WindowWidth,WindowHeight), Color.White);
+        _spriteBatch.Draw(_background, new Rectangle(0, 0, WindowWidth, WindowHeight), Color.White);
 
         for (int line = 0; line < _nbLine; line++)
         {
@@ -167,11 +176,11 @@ public class CodeBlock2D : Game
                 switch ((BlockEnum)idBlock)
                 {
                     case BlockEnum.dirt:
-                        _spriteBatch.Draw(_dirtTexture, new Rectangle(BlockSize * column, BlockSize * line, BlockSize, BlockSize), Color.White);
+                        _spriteBatch.Draw(_dirtTexture, new Rectangle(BlockSize * column, BlockSize * line, _dirtTexture.Width, _dirtTexture.Height), Color.White);
                         break;
 
                     case BlockEnum.grass:
-                        _spriteBatch.Draw(_grassTexture, new Rectangle(BlockSize * column, BlockSize * line, BlockSize, BlockSize), Color.White);
+                        _spriteBatch.Draw(_grassTexture, new Rectangle(BlockSize * column, BlockSize * line, _grassTexture.Width, _grassTexture.Height), Color.White);
                         break;
 
                     case BlockEnum.stone:
@@ -182,10 +191,7 @@ public class CodeBlock2D : Game
         }
 
         DrawInventory();
-<<<<<<< HEAD
-=======
 
->>>>>>> integration
         _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)yPlayer, _playerTexture.Width, _playerTexture.Height), Color.White);
 
         for (int i = 0; i < health_Bar / 20; i++)
@@ -214,11 +220,33 @@ public class CodeBlock2D : Game
     private static int[,] CreateMap()
     {
         int[,] map = new int[_nbLine, _nbCol];
-        for (int line = 0; line < _nbLine; line++)
+        int baseFloor = _nbLine * 6 / 9, maxHeight = baseFloor / 2 + 4, formation = 0;
+        int floorLvl = _floorLvl.Next(baseFloor - 2, baseFloor + 1);
+
+        for (int column = 0; column < _nbCol; column++)
         {
-            for (int column = 0; column < _nbCol; column++)
+            if (formation == 1)
             {
-                if (line < 2 * _nbLine / 3)
+                floorLvl = _floorLvl.Next(floorLvl - 1, floorLvl + 2);
+                formation = 0;
+            }
+            else
+            {
+                formation++;
+            }
+
+
+            if (floorLvl <= maxHeight)
+            {
+                floorLvl = maxHeight;
+            }
+            else if (floorLvl >= _nbLine)
+            {
+                floorLvl--;
+            }
+            for (int line = 0; line < _nbLine; line++)
+            {
+                if (line < floorLvl)
                 {
                     map[line, column] = 0;
 
@@ -286,12 +314,12 @@ public class CodeBlock2D : Game
                 ySearch++;
             }
         }
-        
+
         if (map[yMatPos + 2, xMatPos] == (int)BlockEnum.air)
         {
-            if (yVelPlayer <= 8)
+            if (yVelPlayer <= 5)
             {
-                yVelPlayer += 0.70f;
+                yVelPlayer += 0.49f;
             }
         }
 
