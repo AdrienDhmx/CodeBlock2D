@@ -122,5 +122,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+=======
+>>>>>>> integration
 /build:Player/player.png
 

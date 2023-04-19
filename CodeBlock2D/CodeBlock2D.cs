@@ -25,17 +25,16 @@ public class CodeBlock2D : Game
 
     private const int _inventorySize = 6;
 
-    private SpriteFont _font;
-
-
     private static Random _floorLvl = new Random();
+
+    private SpriteFont _font;
 
     private Texture2D _background;
     private Texture2D _inventoryBlock;
     private Texture2D _inventoryBlockSelected;
     private Texture2D _dirtTexture;
-    private Texture2D _grassTexture;
     private Texture2D _stoneTexture;
+    private Texture2D _grassTexture;
     private Texture2D _playerTexture;
 
     private int[,] map;
@@ -47,10 +46,6 @@ public class CodeBlock2D : Game
     private float yPlayer = 0;//WindowHeight / 2 - BlockSize;
     private float _speedPlayer = 0.3f;
 
-    /// <summary>
-    /// Key => Value
-    /// blockIndex => [blockType, Quantity]
-    /// </summary>
     private Dictionary<int, int[]> inventory;
     private int selectedInventoryBlock = 0;
 
@@ -81,11 +76,9 @@ public class CodeBlock2D : Game
         _font = Content.Load<SpriteFont>("font");
         _background = Content.Load<Texture2D>("background");
         _dirtTexture = Content.Load<Texture2D>("Blocks/dirt");
-        _grassTexture = Content.Load<Texture2D>("Blocks/grass");
         _stoneTexture = Content.Load<Texture2D>("Blocks/stone");
+        _grassTexture = Content.Load<Texture2D>("Blocks/grass");
         _playerTexture = Content.Load<Texture2D>("Player/player");
-        _inventoryBlock = Content.Load<Texture2D>("inventoryBlock");
-        _inventoryBlockSelected = Content.Load<Texture2D>("inventoryBlockSelected");
     }
 
     protected override void Update(GameTime gameTime)
@@ -188,33 +181,11 @@ public class CodeBlock2D : Game
     private static int[,] CreateMap()
     {
         int[,] map = new int[_nbLine, _nbCol];
-        int baseFloor = _nbLine * 6 / 9, maxHeight = baseFloor / 2 + 4, formation = 0;
-        int floorLvl = _floorLvl.Next(baseFloor - 2, baseFloor + 1);
-
-        for (int column = 0; column < _nbCol; column++)
+        for (int line = 0; line < _nbLine; line++)
         {
-            if (formation == 1)
+            for (int column = 0; column < _nbCol; column++)
             {
-                floorLvl = _floorLvl.Next(floorLvl - 1, floorLvl + 2);
-                formation = 0;
-            } 
-            else
-            {
-                formation++;
-            }
-            
-
-            if (floorLvl <= maxHeight)
-            {
-                floorLvl = maxHeight;
-            }
-            else if (floorLvl >= _nbLine)
-            {
-                floorLvl--;
-            }
-            for (int line = 0; line < _nbLine; line++)
-            {
-                if (line < floorLvl)
+                if (line < 2 * _nbLine / 3)
                 {
                     map[line, column] = 0;
 
