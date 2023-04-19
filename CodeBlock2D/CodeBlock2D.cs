@@ -34,7 +34,6 @@ public class CodeBlock2D : Game
     private float xPlayer = WindowWidth / 2 - BlockSize;
     private float yPlayer = 0;//WindowHeight / 2 - BlockSize;
     private float _speedPlayer = 0.3f;
-    private float _momentum = 0f;
 
     public CodeBlock2D()
     {
@@ -88,7 +87,6 @@ public class CodeBlock2D : Game
                     if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1 , newXplayer] == 0)
                     {
                         xPlayer -= ellapsedMs * _speedPlayer;
-                        _momentum = -5;
                     }
                     break;
 
@@ -98,7 +96,6 @@ public class CodeBlock2D : Game
                     if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1, newXplayer] == 0)
                     {
                         xPlayer += ellapsedMs * _speedPlayer;
-                        _momentum = 5;
                     }
                     break;
 
@@ -108,20 +105,6 @@ public class CodeBlock2D : Game
 
                 default:
                     break;
-            }
-        }
-
-        if (_momentum != 0)
-        {
-            if (_momentum > 0)
-            {
-                xPlayer += 0.1f;
-                _momentum -= 0.1f;
-            }
-            else if (_momentum < 0)
-            {
-                xPlayer -= 0.1f;
-                _momentum += 0.1f;
             }
         }
     }
