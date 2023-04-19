@@ -41,7 +41,16 @@ public class CodeBlock2D : Game
     private int[,] map;
 
     private float yVelPlayer = 0;
+
+    private Texture2D _heartFull;
+    private Texture2D _heartEmpty;
+    private int health_Bar = 100;
+    private bool Attacked = false;
+    private bool Healed = false;
     
+  
+
+
 
     private float xPlayer = WindowWidth / 2 - BlockSize;
     private float yPlayer = WindowHeight / 2 - BlockSize;
@@ -88,6 +97,22 @@ public class CodeBlock2D : Game
         _stoneTexture = Content.Load<Texture2D>("Blocks/stone");
         _grassTexture = Content.Load<Texture2D>("Blocks/grass");
         _playerTexture = Content.Load<Texture2D>("Player/player");
+
+        _heartFull = Content.Load<Texture2D>("heartFull");
+        _heartEmpty = Content.Load<Texture2D>("heartEmpty");
+
+
+        if (Attacked)
+        {
+            health_Bar -= 10;
+            Attacked = false;
+        }
+
+        if (Healed)
+        {
+            health_Bar += 10;
+            Healed = false;
+        }
     }
 
     protected override void Update(GameTime gameTime)
@@ -167,16 +192,18 @@ public class CodeBlock2D : Game
 
         DrawInventory();
 
-        _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)(yPlayer), _playerTexture.Width, _playerTexture.Height), Color.White);
         _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)yPlayer, _playerTexture.Width, _playerTexture.Height), Color.White);
+
+        for (int i = 0; i < health_Bar / 20; i++)
+        {
+            _spriteBatch.Draw(_heartFull, new Rectangle(8 + i * 50, 10, BlockSize, BlockSize), Color.White);
+        }
         _spriteBatch.End();
 
         base.Draw(gameTime);
     }
-
     protected override void UnloadContent()
     {
-        // free all memory
         _dirtTexture.Dispose();
         _grassTexture.Dispose();
         _playerTexture.Dispose();
@@ -188,6 +215,7 @@ public class CodeBlock2D : Game
 
         base.UnloadContent();
     }
+
 
     private static int[,] CreateMap()
     {
