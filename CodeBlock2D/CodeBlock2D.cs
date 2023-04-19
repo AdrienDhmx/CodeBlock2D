@@ -32,8 +32,9 @@ public class CodeBlock2D : Game
     
 
     private float xPlayer = WindowWidth / 2 - BlockSize;
-    private float yPlayer = WindowHeight / 2 - BlockSize;
+    private float yPlayer = 0;//WindowHeight / 2 - BlockSize;
     private float _speedPlayer = 0.3f;
+    private float _momentum = 0f;
 
     public CodeBlock2D()
     {
@@ -74,28 +75,53 @@ public class CodeBlock2D : Game
         PlayerPhysics();
 
         int ellapsedMs = gameTime.ElapsedGameTime.Milliseconds;
+        int newXplayer;
         Keys[] keysDown = Keyboard.GetState().GetPressedKeys();
 
-<<<<<<< HEAD
-
-        if (Keyboard.GetState().IsKeyDown(Keys.Q))
-=======
         foreach (Keys key in keysDown)
->>>>>>> integration
         {
             switch (key)
             {
                 case Keys.Q:
-                    xPlayer -= ellapsedMs * _speedPlayer;
+                    newXplayer = ((int)(xPlayer - ellapsedMs * _speedPlayer) / BlockSize);
+
+                    if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1 , newXplayer] == 0)
+                    {
+                        xPlayer -= ellapsedMs * _speedPlayer;
+                        _momentum = -5;
+                    }
                     break;
+
                 case Keys.D:
-                    xPlayer += ellapsedMs * _speedPlayer;
+                    newXplayer = ((int)(xPlayer + ellapsedMs * _speedPlayer) / BlockSize) + 1;
+
+                    if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1, newXplayer] == 0)
+                    {
+                        xPlayer += ellapsedMs * _speedPlayer;
+                        _momentum = 5;
+                    }
                     break;
+
                 case Keys.Space:
                     Jump();
                     break;
+
                 default:
                     break;
+            }
+        }
+
+        if (_momentum != 0)
+        {
+            if (_momentum > 0)
+            {
+                xPlayer += 0.1f;
+                _momentum -= 0.1f;
+            }
+            else if (_momentum < 0)
+            {
+                xPlayer -= 0.1f;
+                _momentum += 0.1f;
             }
         }
     }
@@ -152,12 +178,21 @@ public class CodeBlock2D : Game
     private static int[,] CreateMap()
     {
         int[,] map = new int[_nbLine, _nbCol];
-        int baseFloor = _nbLine * 6 / 9, maxHeight = baseFloor / 2 + 4;
+        int baseFloor = _nbLine * 6 / 9, maxHeight = baseFloor / 2 + 4, formation = 0;
         int floorLvl = _floorLvl.Next(baseFloor - 2, baseFloor + 1);
 
         for (int column = 0; column < _nbCol; column++)
         {
-            floorLvl = _floorLvl.Next(floorLvl - 1, floorLvl + 2);
+            if (formation == 1)
+            {
+                floorLvl = _floorLvl.Next(floorLvl - 1, floorLvl + 2);
+                formation = 0;
+            } 
+            else
+            {
+                formation++;
+            }
+            
 
             if (floorLvl <= maxHeight)
             {
