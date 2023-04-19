@@ -5,6 +5,9 @@ using CodeBlock2D;
 using System;
 using System.Runtime.CompilerServices;
 using System.Data.Common;
+using System.Security.Cryptography;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CodeBlock2D;
 public class CodeBlock2D : Game
@@ -17,8 +20,20 @@ public class CodeBlock2D : Game
     private const int WindowHeight = 24 * BlockSize; // 22 blocs
     private const int _nbLine = WindowHeight / BlockSize;
     private const int _nbCol = WindowWidth / BlockSize;
+    private const int gapBetweenInventoryBlock = 5;
+    private const int startInventoryX = WindowWidth - (BlockSize + gapBetweenInventoryBlock) * _inventorySize;
 
+    private const int _inventorySize = 6;
+
+    private SpriteFont _font;
+
+<<<<<<< HEAD
     private static Random _floorLvl = new Random();
+=======
+    private Texture2D _background;
+    private Texture2D _inventoryBlock;
+    private Texture2D _inventoryBlockSelected;
+>>>>>>> integration
 
     private Texture2D _background;
     private Texture2D _dirtTexture;
@@ -35,6 +50,13 @@ public class CodeBlock2D : Game
     private float yPlayer = 0;//WindowHeight / 2 - BlockSize;
     private float _speedPlayer = 0.3f;
 
+    /// <summary>
+    /// Key => Value
+    /// blockIndex => [blockType, Quantity]
+    /// </summary>
+    private Dictionary<int, int[]> inventory;
+    private int selectedInventoryBlock = 0;
+
     public CodeBlock2D()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -50,6 +72,7 @@ public class CodeBlock2D : Game
         _graphics.ApplyChanges();
 
         map = CreateMap();
+        inventory = new();
 
         base.Initialize();
     }
@@ -58,18 +81,29 @@ public class CodeBlock2D : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        _font = Content.Load<SpriteFont>("font");
         _background = Content.Load<Texture2D>("background");
 
+<<<<<<< HEAD
         _dirtTexture = Content.Load<Texture2D>("Blocks/dirt");
         _grassTexture = Content.Load<Texture2D>("Blocks/grass");
         _stoneTexture = Content.Load<Texture2D>("Blocks/stone");
         _playerTexture = Content.Load<Texture2D>("Player/player");
+=======
+        _inventoryBlock = Content.Load<Texture2D>("inventoryBlock");
+        _inventoryBlockSelected = Content.Load<Texture2D>("inventoryBlockSelected");
+
+        _dirtTexture = Content.Load<Texture2D>("Blocks/dirt");
+        _grassTexture = Content.Load<Texture2D>("Blocks/grass");
+        _playerTexture = Content.Load<Texture2D>("player");
+>>>>>>> integration
     }
 
     protected override void Update(GameTime gameTime)
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
+
 
         PlayerPhysics();
 
@@ -140,6 +174,12 @@ public class CodeBlock2D : Game
             }
         }
 
+<<<<<<< HEAD
+=======
+        DrawInventory();
+
+        _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)(yPlayer), _playerTexture.Width, _playerTexture.Height), Color.White);
+>>>>>>> integration
         _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)yPlayer, _playerTexture.Width, _playerTexture.Height), Color.White);
         _spriteBatch.End();
 
@@ -152,6 +192,9 @@ public class CodeBlock2D : Game
         _dirtTexture.Dispose();
         _grassTexture.Dispose();
         _playerTexture.Dispose();
+        _background.Dispose();
+        _inventoryBlock.Dispose();
+        _inventoryBlockSelected.Dispose();
         _spriteBatch.Dispose();
         _graphics.Dispose();
 
@@ -212,6 +255,33 @@ public class CodeBlock2D : Game
             }
         }
         return map;
+    }
+    private void DrawInventory()
+    {
+        int inventoryX = startInventoryX;
+        int Y = gapBetweenInventoryBlock;
+        float blockScale = 0.8f;
+        int scaleBlockDif = (BlockSize - (int)(BlockSize * blockScale)) / 2;
+        for (int inventoryBlock = 0; inventoryBlock < _inventorySize; inventoryBlock++)
+        {
+            if (selectedInventoryBlock == inventoryBlock)
+            {
+                _spriteBatch.Draw(_inventoryBlockSelected, new Rectangle(inventoryX, Y, BlockSize, BlockSize), Color.White);
+            }
+            else
+            {
+                _spriteBatch.Draw(_inventoryBlock, new Rectangle(inventoryX, Y, BlockSize, BlockSize), Color.White);
+            }
+
+            inventoryX += BlockSize + gapBetweenInventoryBlock;
+        }
+
+        foreach (KeyValuePair<int, int[]> kvp in inventory)
+        {
+            int blocX = startInventoryX + (BlockSize + gapBetweenInventoryBlock) * kvp.Key;
+            _spriteBatch.Draw(GetBlockTexture((BlockEnum)kvp.Value[0]), new Vector2(blocX + scaleBlockDif, Y + scaleBlockDif), null, Color.White, 0f, Vector2.Zero, blockScale, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(_font, kvp.Value[1].ToString(), new Vector2(blocX + (int)(BlockSize * 0.3), (int)(Y + BlockSize * 0.2)), Color.White);
+        }
     }
     private void PlayerPhysics()
     {
@@ -278,5 +348,14 @@ public class CodeBlock2D : Game
         {
             yVelPlayer -= 10;
         }
+    }
+    private Texture2D GetBlockTexture(BlockEnum block)
+    {
+        return block switch
+        {
+            BlockEnum.dirt => _dirtTexture,
+            BlockEnum.grass => _grassTexture,
+            _ => null,
+        };
     }
 }
