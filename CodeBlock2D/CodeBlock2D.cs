@@ -27,15 +27,12 @@ public class CodeBlock2D : Game
 
     private SpriteFont _font;
 
-<<<<<<< HEAD
+
     private static Random _floorLvl = new Random();
-=======
+
     private Texture2D _background;
     private Texture2D _inventoryBlock;
     private Texture2D _inventoryBlockSelected;
->>>>>>> integration
-
-    private Texture2D _background;
     private Texture2D _dirtTexture;
     private Texture2D _grassTexture;
     private Texture2D _stoneTexture;
@@ -83,20 +80,12 @@ public class CodeBlock2D : Game
 
         _font = Content.Load<SpriteFont>("font");
         _background = Content.Load<Texture2D>("background");
-
-<<<<<<< HEAD
         _dirtTexture = Content.Load<Texture2D>("Blocks/dirt");
         _grassTexture = Content.Load<Texture2D>("Blocks/grass");
         _stoneTexture = Content.Load<Texture2D>("Blocks/stone");
         _playerTexture = Content.Load<Texture2D>("Player/player");
-=======
         _inventoryBlock = Content.Load<Texture2D>("inventoryBlock");
         _inventoryBlockSelected = Content.Load<Texture2D>("inventoryBlockSelected");
-
-        _dirtTexture = Content.Load<Texture2D>("Blocks/dirt");
-        _grassTexture = Content.Load<Texture2D>("Blocks/grass");
-        _playerTexture = Content.Load<Texture2D>("player");
->>>>>>> integration
     }
 
     protected override void Update(GameTime gameTime)
@@ -174,12 +163,7 @@ public class CodeBlock2D : Game
             }
         }
 
-<<<<<<< HEAD
-=======
         DrawInventory();
-
-        _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)(yPlayer), _playerTexture.Width, _playerTexture.Height), Color.White);
->>>>>>> integration
         _spriteBatch.Draw(_playerTexture, new Rectangle((int)xPlayer, (int)yPlayer, _playerTexture.Width, _playerTexture.Height), Color.White);
         _spriteBatch.End();
 
