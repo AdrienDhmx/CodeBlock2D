@@ -48,8 +48,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Blocks/grass.png
-<<<<<<< HEAD
-=======
 
 #begin Blocks/stone.png
 /importer:TextureImporter
@@ -93,13 +91,8 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:inventoryBlockSelected.png
->>>>>>> integration
 
-<<<<<<< HEAD
-#begin Blocks/stone.png
-=======
 #begin Player/player.png
->>>>>>> integration
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -109,8 +102,8 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-<<<<<<< HEAD
-/build:Blocks/stone.png
+/build:Player/player.png
+
 
 #begin HeartEmpty.png
 /importer:TextureImporter
@@ -135,18 +128,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:heartFull.png
-
-#begin player.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-=======
->>>>>>> integration
-/build:Player/player.png
 
