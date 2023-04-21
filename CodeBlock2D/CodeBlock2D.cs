@@ -158,11 +158,12 @@ public class CodeBlock2D : Game
         }
 
          MouseState mouseState = Mouse.GetState();
+
         // mouse left button pressed
         if (mouseState.LeftButton == ButtonState.Pressed)
         {
             // if mouse click is inside the range of the player
-            if (IsClickWithinPlayerRange(mouseState.Position))
+            if (IsPointWithinPlayerRange(mouseState.Position))
             {
                 int blockX = mouseState.Position.X / BlockSize;
                 int blockY = mouseState.Position.Y / BlockSize;
@@ -411,7 +412,7 @@ public class CodeBlock2D : Game
         }
     }
 
-    private bool IsClickWithinPlayerRange(Point mousePos)
+    private bool IsPointWithinPlayerRange(Point mousePos)
     {
         return Math.Abs(mousePos.X - xPlayer) < _playerRange &&
                 Math.Abs(mousePos.Y - yPlayer) < _playerRange;
