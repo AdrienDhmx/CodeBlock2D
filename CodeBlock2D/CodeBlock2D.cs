@@ -77,7 +77,7 @@ public class CodeBlock2D : Game
         // init list with invalid values
         for (int i = 0; i < _inventorySize; i++)
         {
-            inventory.Add(new int[] { -1, 0 });
+            inventory.Add(new int[] { 0, 0 });
         }
 
         base.Initialize();
@@ -180,6 +180,28 @@ public class CodeBlock2D : Game
                 }
             }
         }
+
+        // mouse right button pressed and their is a block in the selected inventory slot
+        if (mouseState.RightButton == ButtonState.Pressed && inventory[_selectedInventoryBlock][0] != 0)
+        {
+            // if mouse click is inside the range of the player
+            if (IsPointWithinPlayerRange(mouseState.Position) && !IsPointOnPlayer(mouseState.Position))
+            {
+                int blockX = mouseState.Position.X / BlockSize;
+                int blockY = mouseState.Position.Y / BlockSize;
+
+                int blockTarget = map[blockY, blockX];
+
+                // if clicked block is air
+                if (blockTarget == 0)
+                {
+                    // remove block from map
+                    map[blockY, blockX] = inventory[_selectedInventoryBlock][0];
+
+                    RemoveBlockFromInventory();
+                }
+            }
+        }
     }
 
     protected override void Draw(GameTime gameTime)
@@ -236,7 +258,7 @@ public class CodeBlock2D : Game
 
         for (int i = 0; i < _inventorySize; i++)
         {
-            if (inventory[i][0] != -1)
+            if (inventory[i][0] != 0)
             {
                 int blocX = startInventoryX + (BlockSize + gapBetweenInventoryBlock) * i;
                 _spriteBatch.Draw(GetBlockTexture((BlockEnum)inventory[i][0]), new Vector2(blocX + scaleBlockDif, Y + scaleBlockDif), null, Color.White, 0f, Vector2.Zero, blockScale, SpriteEffects.None, 1);
@@ -399,7 +421,7 @@ public class CodeBlock2D : Game
                 inventory[i][1]++; // increase qty
                 return;
             }
-            else if (inventory[i][0] == -1 && freeSlotIndex == -1) // first free slot found
+            else if (inventory[i][0] == 0 && freeSlotIndex == -1) // first free slot found
             {
                 freeSlotIndex = i;
             }
@@ -412,10 +434,25 @@ public class CodeBlock2D : Game
         }
     }
 
+    private void RemoveBlockFromInventory()
+    {
+        if(inventory[_selectedInventoryBlock][1] == 1)
+        {
+            inventory[_selectedInventoryBlock][0] = 0;
+        }
+        inventory[_selectedInventoryBlock][1]--;
+    }
+
     private bool IsPointWithinPlayerRange(Point mousePos)
     {
         return Math.Abs(mousePos.X - xPlayer) < _playerRange &&
                 Math.Abs(mousePos.Y - yPlayer) < _playerRange;
+    }
+
+    private bool IsPointOnPlayer(Point pos)
+    {
+        return Math.Abs(pos.X - xPlayer) < BlockSize &&
+                Math.Abs(pos.Y - yPlayer) < BlockSize * 2; // the player height is 2 blocks
     }
 
     private Texture2D GetBlockTexture(BlockEnum block)
