@@ -131,7 +131,7 @@ public class CodeBlock2D : Game
         {
             switch (key)
             {
-                case Keys.Q:
+                case Keys.Q or Keys.Left:
                     newXplayer = ((int)(xPlayer - ellapsedMs * _speedPlayer) / BlockSize);
 
                     if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1, newXplayer] == 0)
@@ -140,7 +140,7 @@ public class CodeBlock2D : Game
                     }
                     break;
 
-                case Keys.D:
+                case Keys.D or Keys.Right:
                     newXplayer = ((int)(xPlayer + ellapsedMs * _speedPlayer) / BlockSize) + 1;
 
                     if (map[(int)yPlayer / BlockSize, newXplayer] == 0 && map[((int)yPlayer / BlockSize) + 1, newXplayer] == 0)
@@ -149,8 +149,20 @@ public class CodeBlock2D : Game
                     }
                     break;
 
-                case Keys.Space:
+                case Keys.Space or Keys.Up:
                     Jump();
+                    break;
+
+                case Keys.L:
+                    if (health_Bar == 0 )
+                    {
+                        health_Bar = 100;
+                    }
+                    else
+                    {
+                        health_Bar -= 20;
+                    }
+                    
                     break;
 
                 default:
