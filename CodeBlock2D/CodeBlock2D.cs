@@ -42,6 +42,7 @@ public class CodeBlock2D : Game
 
     private Texture2D _heartFull;
     private Texture2D _heartEmpty;
+<<<<<<< HEAD
     private int health_Bar = 100;
     private bool Attacked = false;
     private bool Healed = false;
