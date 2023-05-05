@@ -11,5 +11,6 @@ namespace CodeBlock2D
         air = 0,
         dirt,
         grass,
+        stone,
     }
 }
