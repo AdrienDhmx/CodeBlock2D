@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Immutable;
+using System.Xml;
 
 namespace CodeBlock2D;
 public class CodeBlock2D : Game
@@ -24,6 +25,9 @@ public class CodeBlock2D : Game
     private const int gapBetweenInventoryBlock = 5;
     private const int startInventoryX = WindowWidth - (BlockSize + gapBetweenInventoryBlock) * _inventorySize;
     private const int _inventorySize = 6;
+    private const float max_fall_heigth = 4.0f * BlockSize;
+    private const float max_fall_speed = 30.0f;
+    private const float gravity = 9.8f;
 
     private static readonly Random _floorLvl = new Random();
 
@@ -51,6 +55,10 @@ public class CodeBlock2D : Game
     private float yVelPlayer = 0;
     private float _speedPlayer = 0.3f;
     private float _playerRange = 3 * BlockSize;
+
+    private int fallHeight = 0;
+    private int damageTaken = 0;
+
 
     /// <summary>
     /// blockIndex => [blockType, Quantity]
@@ -228,10 +236,17 @@ public class CodeBlock2D : Game
 
         _spriteBatch.Draw(_playerTexture, new Vector2((int)xPlayer, (int)yPlayer), Color.White);
 
-        for (int i = 0; i < _health_Bar / 20; i++)
+        int i;
+        for (i = 0; i < _health_Bar / 20; i++)
         {
             _spriteBatch.Draw(_heartFull, new Vector2(8 + i * 50, 10), Color.White);
         }
+
+        if(damageTaken > 0)
+        {
+            _spriteBatch.DrawString(_font, $"- {damageTaken}", new Vector2(8 + i * 50, 0), Color.Red, 0f, Vector2.Zero, 2.0f, SpriteEffects.None, 1);
+        }
+
         _spriteBatch.End();
 
         base.Draw(gameTime);
@@ -375,11 +390,21 @@ public class CodeBlock2D : Game
                 if (yPlayer + yVelPlayer < yFloor - 2 * BlockSize)
                 {
                     yPlayer += yVelPlayer;
+
+                    int currentHeightFromGround = ySearch - yMatPos - 2;
+                    if(currentHeightFromGround > fallHeight)
+                    {
+                        fallHeight = currentHeightFromGround;
+                    }
                 }
                 else
                 {
                     yPlayer = yFloor - 2 * BlockSize;
                     yVelPlayer = 0;
+
+                    damageTaken = FallDmg(fallHeight * BlockSize);
+                    _health_Bar -= damageTaken;
+                    fallHeight = 0;
                 }
             }
             if (yVelPlayer < 0)
@@ -390,6 +415,7 @@ public class CodeBlock2D : Game
             }
         }
     }
+
     private void Jump()
     {
         int xMatPos = (int)xPlayer / BlockSize, yMatPos = (int)yPlayer / BlockSize, yFloor = -1, ySearch = yMatPos;
@@ -409,6 +435,21 @@ public class CodeBlock2D : Game
         {
             yVelPlayer -= 10;
         }
+    }
+
+    public static int FallDmg(float fall_heigth)
+    {
+        int dmg = 0;
+        if (fall_heigth > max_fall_heigth)
+        {
+            float speed_impct = (float)Math.Sqrt(2 * fall_heigth * gravity);
+
+            if (speed_impct > max_fall_speed)
+            {
+                dmg = (int)((speed_impct - max_fall_speed) / 5.0f);
+            }
+        }
+        return dmg;
     }
 
     private void AddBlockToInventory(int block)
